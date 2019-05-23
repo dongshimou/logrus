@@ -164,7 +164,7 @@ func getPackageName(f string) string {
 }
 
 // getCaller retrieves the name of the first non-logrus calling function
-func getCaller() *runtime.Frame {
+func getCaller(skip int) *runtime.Frame {
 
 	// cache this package's fully-qualified name
 	callerInitOnce.Do(func() {
@@ -187,6 +187,10 @@ func getCaller() *runtime.Frame {
 
 		// If the caller isn't part of this package, we're done
 		if pkg != logrusPackage {
+			if skip != 0 {
+				skip--
+				continue
+			}
 			return &f
 		}
 	}
@@ -218,7 +222,7 @@ func (entry Entry) log(level Level, msg string) {
 	entry.Level = level
 	entry.Message = msg
 	if entry.Logger.ReportCaller {
-		entry.Caller = getCaller()
+		entry.Caller = getCaller(entry.Logger.CallerSkip)
 	}
 
 	entry.fireHooks()
