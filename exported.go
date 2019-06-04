@@ -31,6 +31,11 @@ func SetReportCaller(include bool) {
 	std.SetReportCaller(include)
 }
 
+// SetCallerSkip set caller skip frames, package name not  logrus
+func SetCallerSkip(skip int) {
+	std.CallerSkip = skip
+}
+
 // SetLevel sets the standard logger level.
 func SetLevel(level Level) {
 	std.SetLevel(level)
